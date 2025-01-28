@@ -63,7 +63,7 @@ namespace SistemaVenta.BLL.Servicios
                 productoEncontrado.Stock = productoModelo.Stock;
                 productoEncontrado.Precio = productoModelo.Precio;
                 productoEncontrado.EsActivo = productoModelo.EsActivo;
-                if (!await _productoRepository.Editar(productoModelo))
+                if (!await _productoRepository.Editar(productoEncontrado))
                     throw new TaskCanceledException("No se pudo editar el producto");
                 return true;
             }
