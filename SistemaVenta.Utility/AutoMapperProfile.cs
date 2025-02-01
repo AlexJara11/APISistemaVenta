@@ -72,12 +72,14 @@ namespace SistemaVenta.Utility
 
             #region Venta
             CreateMap<Venta, VentaDTO>()
-                .ForMember(destino =>
-                destino.TotalTexto,
-                opt => opt.MapFrom(origen => Convert.ToString(origen.Total.Value, new CultureInfo("es-PE"))))
-                .ForMember(destino =>
-                destino.FechaRegistro,
-                opt => opt.MapFrom(origen => origen.FechaRegistro.Value.ToString("dd//MM/yy")));
+    .ForMember(destino =>
+    destino.TotalTexto,
+    opt => opt.MapFrom(origen => Convert.ToString(origen.Total.Value, new CultureInfo("es-PE"))))
+    .ForMember(destino =>
+    destino.FechaRegistro,
+    opt => opt.MapFrom(origen => origen.FechaRegistro.HasValue
+        ? origen.FechaRegistro.Value.ToString("dd/MM/yyyy")
+        : string.Empty));
 
             CreateMap<VentaDTO, Venta>()
                 .ForMember(destino =>
@@ -85,7 +87,9 @@ namespace SistemaVenta.Utility
                 opt => opt.MapFrom(origen => Convert.ToDecimal(origen.TotalTexto, new CultureInfo("es-PE"))))
                 .ForMember(destino =>
                 destino.FechaRegistro,
-                opt => opt.MapFrom(origen => Convert.ToDateTime(origen.FechaRegistro)));
+                opt => opt.MapFrom(origen => !string.IsNullOrEmpty(origen.FechaRegistro)
+                    ? Convert.ToDateTime(origen.FechaRegistro)
+                    : (DateTime?)null));
             #endregion
 
             #region DetalleVenta
@@ -116,7 +120,7 @@ namespace SistemaVenta.Utility
             CreateMap<DetalleVenta, ReporteDTO>()
                 .ForMember(destino =>
                 destino.FechaRegistro,
-                opt => opt.MapFrom(origen => origen.IdVentaNavigation.FechaRegistro.Value.ToString("dd//MM//yy")))
+                opt => opt.MapFrom(origen => origen.IdVentaNavigation.FechaRegistro.Value.ToString("dd/MM/yyyy")))
                 .ForMember(destino =>
                 destino.NumeroDocumento,
                 opt => opt.MapFrom(origen => origen.IdVentaNavigation.NumeroDocumento))
